@@ -65,6 +65,7 @@
 		F469CF4924DD0E310092C7F9 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F469CF4824DD0E310092C7F9 /* Profile.swift */; };
 		F46C25752A4937ED00FF9100 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46C25742A4937ED00FF9100 /* VisualEffectView.swift */; };
 		F46C25782A49386D00FF9100 /* UnsupportedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46C25772A49386D00FF9100 /* UnsupportedView.swift */; };
+		F4B100022B1234567890ABCD /* NoAdjustableSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B100012B1234567890ABCD /* NoAdjustableSettingsView.swift */; };
 		F46C257B2A493FBD00FF9100 /* ProfilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46C257A2A493FBD00FF9100 /* ProfilesView.swift */; };
 		F47D07C824C4104300E44A22 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47D07C724C4104300E44A22 /* AppDelegate.swift */; };
 		F47D07CA24C4104300E44A22 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47D07C924C4104300E44A22 /* ContentView.swift */; };
@@ -77,6 +78,7 @@
 		F47D080A24C50E1C00E44A22 /* StringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47D080924C50E1C00E44A22 /* StringTests.swift */; };
 		F4A000142B1234567890ABCD /* ValueFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000042B1234567890ABCD /* ValueFormatterTests.swift */; };
 		F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */; };
+		F4B100042B1234567890ABCD /* DevicesManagerSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */; };
 		F486353124CBA574003CE0BA /* NumberCaptureDeviceProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486353024CBA574003CE0BA /* NumberCaptureDeviceProperty.swift */; };
 		F49FA8252A43BE5D0043E0E1 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F49FA8242A43BE5D0043E0E1 /* Sparkle */; };
 		F4D1713E2A3D4C770039E353 /* TabSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D1713D2A3D4C770039E353 /* TabSelectorView.swift */; };
@@ -199,6 +201,7 @@
 		F469CF4824DD0E310092C7F9 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		F46C25742A4937ED00FF9100 /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		F46C25772A49386D00FF9100 /* UnsupportedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsupportedView.swift; sourceTree = "<group>"; };
+		F4B100012B1234567890ABCD /* NoAdjustableSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoAdjustableSettingsView.swift; sourceTree = "<group>"; };
 		F46C257A2A493FBD00FF9100 /* ProfilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilesView.swift; sourceTree = "<group>"; };
 		F47D07C424C4104300E44A22 /* CameraController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F47D07C724C4104300E44A22 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -224,6 +227,7 @@
 		F47D080924C50E1C00E44A22 /* StringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringTests.swift; sourceTree = "<group>"; };
 		F4A000042B1234567890ABCD /* ValueFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueFormatterTests.swift; sourceTree = "<group>"; };
 		F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterConfigurationTests.swift; sourceTree = "<group>"; };
+		F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesManagerSelectionTests.swift; sourceTree = "<group>"; };
 		F47D080B24C50F7B00E44A22 /* USBDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDevice.swift; sourceTree = "<group>"; };
 		F47D080D24C54A2000E44A22 /* io_service_t+Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "io_service_t+Interface.swift"; sourceTree = "<group>"; };
 		F47D080F24C54B5C00E44A22 /* UnsafeMutablePointer+interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnsafeMutablePointer+interface.swift"; sourceTree = "<group>"; };
@@ -394,6 +398,7 @@
 				F4D1713F2A3E95410039E353 /* Constants.swift */,
 				F46C25742A4937ED00FF9100 /* VisualEffectView.swift */,
 				F46C25772A49386D00FF9100 /* UnsupportedView.swift */,
+				F4B100012B1234567890ABCD /* NoAdjustableSettingsView.swift */,
 				F43E3BBE2A5510FA006A711F /* SectionComponents */,
 				F43E3BBF2A55114B006A711F /* ControlComponents */,
 			);
@@ -473,6 +478,7 @@
 			children = (
 				F47D07E224C4104600E44A22 /* Info.plist */,
 				F47D07F324C412F800E44A22 /* DevicesManagerTests.swift */,
+				F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */,
 				F47D080924C50E1C00E44A22 /* StringTests.swift */,
 				F4A000042B1234567890ABCD /* ValueFormatterTests.swift */,
 				F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */,
@@ -952,6 +958,7 @@
 				F4D4C6D224CBD83100581E05 /* BacklightView.swift in Sources */,
 				F424603D2A5A678C009108C2 /* HueView.swift in Sources */,
 				F46C25782A49386D00FF9100 /* UnsupportedView.swift in Sources */,
+				F4B100022B1234567890ABCD /* NoAdjustableSettingsView.swift in Sources */,
 				F4D4C6D624CBD96B00581E05 /* MultipleCaptureDeviceProperty.swift in Sources */,
 				F42460472A5A6D26009108C2 /* UpdatesSection.swift in Sources */,
 				F4D4C6D024CBD3B000581E05 /* PowerLineView.swift in Sources */,
@@ -980,6 +987,7 @@
 				F4A000142B1234567890ABCD /* ValueFormatterTests.swift in Sources */,
 				F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */,
 				F47D07F424C412F800E44A22 /* DevicesManagerTests.swift in Sources */,
+				F4B100042B1234567890ABCD /* DevicesManagerSelectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
