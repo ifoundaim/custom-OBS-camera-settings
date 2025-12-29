@@ -11,105 +11,79 @@ import IOKit
 
 extension IOUSBConfigurationDescriptorPtr {
     func proccessDescriptor() -> UVCDescriptor {
+        // Defaults when parsing fails
         var processingUnitID = -1
         var cameraTerminalID = -1
         var interfaceID = -1
 
-        let remaining = self.pointee.wTotalLength - UInt16(self.pointee.bLength)
-        var pointer = UnsafeMutablePointer<UInt8>(OpaquePointer(self))
-        pointer = pointer.advanced(by: Int(self.pointee.bLength))
+        let totalLength = Int(UInt16(littleEndian: self.pointee.wTotalLength))
+        let configLength = Int(self.pointee.bLength)
 
-        browseDescriptor(remaining, pointer, &processingUnitID, &cameraTerminalID, &interfaceID)
+        // Safety: configuration descriptor must fit in its reported length
+        guard totalLength >= configLength, totalLength > 0 else {
+            return UVCDescriptor(processingUnitID: processingUnitID,
+                                 cameraTerminalID: cameraTerminalID,
+                                 interfaceID: interfaceID)
+        }
+
+        // Treat the configuration descriptor as a flat byte buffer and scan through all sub-descriptors.
+        let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer(self))
+        var offset = configLength
+
+        // Track whether we're currently inside the VideoControl interface descriptor block.
+        var inVideoControlInterface = false
+        var videoControlInterfaceNumber: Int = -1
+
+        while offset + 2 <= totalLength {
+            let length = Int(bytes[offset])
+            if length <= 0 || offset + length > totalLength {
+                break
+            }
+
+            let descriptorType = bytes[offset + 1]
+
+            // Standard Interface Descriptor (0x04)
+            if descriptorType == kUSBInterfaceDesc, length >= 9 {
+                let bInterfaceNumber = Int(bytes[offset + 2])
+                let bInterfaceClass = bytes[offset + 5]
+                let bInterfaceSubClass = bytes[offset + 6]
+
+                if bInterfaceClass == UInt8(UVCConstants.classVideo) &&
+                    bInterfaceSubClass == UInt8(UVCConstants.subclassVideoControl) {
+                    inVideoControlInterface = true
+                    videoControlInterfaceNumber = bInterfaceNumber
+                    interfaceID = bInterfaceNumber
+                } else {
+                    inVideoControlInterface = false
+                }
+            }
+
+            // Class-specific Interface Descriptor (0x24)
+            if inVideoControlInterface && descriptorType == UVCConstants.descriptorTypeInterface, length >= 4 {
+                let subType = bytes[offset + 2]
+
+                // VC_INPUT_TERMINAL (0x02) – terminal id at offset 3
+                if subType == UVCConstants.DescriptorSubtype.inputTerminal.rawValue {
+                    cameraTerminalID = Int(bytes[offset + 3])
+                }
+
+                // VC_PROCESSING_UNIT (0x05) – unit id at offset 3
+                if subType == UVCConstants.DescriptorSubtype.processingUnit.rawValue {
+                    processingUnitID = Int(bytes[offset + 3])
+                }
+
+                if interfaceID != -1 && processingUnitID != -1 && cameraTerminalID != -1 {
+                    return UVCDescriptor(processingUnitID: processingUnitID,
+                                         cameraTerminalID: cameraTerminalID,
+                                         interfaceID: interfaceID)
+                }
+            }
+
+            offset += length
+        }
 
         return UVCDescriptor(processingUnitID: processingUnitID,
                              cameraTerminalID: cameraTerminalID,
                              interfaceID: interfaceID)
-    }
-
-    private func browseDescriptor(_ memory: UInt16, _ pointer: UnsafeMutablePointer<UInt8>,
-                                  _ processingUnitID: inout Int,
-                                  _ cameraTerminalID: inout Int,
-                                  _ interfaceID: inout Int) {
-        var remaining = memory
-        var currentPointer = pointer
-
-        while remaining > 0 {
-            var descriptorPointer = InterfaceDescriptorPointer(OpaquePointer(currentPointer))
-
-            if descriptorPointer.pointee.bDescriptorType == kUSBInterfaceDesc {
-                let intDesc = UnsafeMutablePointer<IOUSBInterfaceDescriptor>(OpaquePointer(descriptorPointer))
-                if !(intDesc.pointee.bInterfaceClass == UVCConstants.classVideo
-                    && intDesc.pointee.bInterfaceSubClass == UVCConstants.subclassVideoControl) {
-
-                    currentPointer = currentPointer.advanced(by: Int(intDesc.pointee.bLength))
-                    continue
-                }
-
-                currentPointer = currentPointer.advanced(by: Int(intDesc.pointee.bLength))
-                descriptorPointer = InterfaceDescriptorPointer(OpaquePointer(currentPointer))
-
-                if descriptorPointer.pointee.bDescriptorType != UVCConstants.descriptorTypeInterface {
-                    break
-                }
-
-                let internalDescriptor = UnsafeMutablePointer<UVC_VCHeaderDescriptor>(OpaquePointer(descriptorPointer))
-                if internalDescriptor.pointee.bDescriptorSubType == UVCConstants.subclassVideoControl {
-                    let littleEndian = Int(internalDescriptor.pointee.wTotalLength).littleEndian
-                    internalDescriptor.pointee.wTotalLength = UInt16(littleEndian)
-
-                    remaining -= internalDescriptor.pointee.wTotalLength
-                    currentPointer = currentPointer.advanced(by: Int(internalDescriptor.pointee.bLength))
-                    var remainingMemory = internalDescriptor.pointee.wTotalLength
-                        - UInt16(internalDescriptor.pointee.bLength)
-
-                    while remainingMemory > 0 {
-                        descriptorPointer = InterfaceDescriptorPointer(OpaquePointer(currentPointer))
-                        if descriptorPointer.pointee.bDescriptorType != UVCConstants.descriptorTypeInterface {
-                            break
-                        }
-
-                        getDeviceId(descriptorPointer, currentPointer, &processingUnitID, &cameraTerminalID)
-                        interfaceID = Int(intDesc.pointee.bInterfaceNumber)
-
-                        if interfaceID != -1 && processingUnitID != -1 && cameraTerminalID != -1 {
-                            // Found all necessary data, exit
-                            // Fix for WB7022 Camera
-                            return
-                        }
-
-                        remainingMemory -= UInt16(descriptorPointer.pointee.bLength)
-                        currentPointer = currentPointer.advanced(by: Int(descriptorPointer.pointee.bLength))
-                    }
-                } else {
-                    remaining -= UInt16(descriptorPointer.pointee.bLength)
-                    currentPointer = currentPointer.advanced(by: Int(descriptorPointer.pointee.bLength))
-                }
-                break
-            } else {
-                remaining -= UInt16(descriptorPointer.pointee.bLength)
-                currentPointer = currentPointer.advanced(by: Int(descriptorPointer.pointee.bLength))
-            }
-        }
-    }
-
-    private func getDeviceId(_ descriptorPointer: InterfaceDescriptorPointer,
-                             _ currentPointer: UnsafeMutablePointer<UInt8>,
-                             _ processingUnitID: inout Int,
-                             _ cameraTerminalID: inout Int) {
-        let unitType = UVCConstants.DescriptorSubtype(rawValue: descriptorPointer.pointee.bDescriptorSubType)
-        switch unitType {
-        case .processingUnit:
-            let puPointer = ProcessingUnitDescriptorPointer(OpaquePointer(currentPointer))
-            processingUnitID = Int(puPointer.pointee.bUnitID)
-        case .inputTerminal:
-            let ctPointer = CameraTerminalDescriptorPointer(OpaquePointer(currentPointer))
-            cameraTerminalID = Int(ctPointer.pointee.bTerminalID)
-        case .none:
-            break
-        case .selectorUnit:
-            break
-        case .extensionUnit:
-            break
-        }
     }
 }
