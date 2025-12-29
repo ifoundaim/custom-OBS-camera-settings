@@ -39,9 +39,14 @@ jobs:
             -project CameraController.xcodeproj \
             -scheme CameraController \
             -configuration Release \
+            -destination 'platform=macOS' \
             -derivedDataPath build \
             CURRENT_PROJECT_VERSION=${{ github.run_number }} \
-            MARKETING_VERSION=0.0.${{ github.run_number }}
+            MARKETING_VERSION=0.0.${{ github.run_number }} \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY= \
+            PROVISIONING_PROFILE_SPECIFIER=
 
       - name: Create update archive
         run: |
