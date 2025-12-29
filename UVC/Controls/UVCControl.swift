@@ -43,13 +43,23 @@ public class UVCControl {
     public var isCapable: Bool = false
 
     init(_ interface: USBInterfacePointer, _ uvcSize: Int, _ uvcSelector: Selector,
-         _ uvcUnit: Int, _ uvcInterface: Int, callouts: USBInterfaceCallouts? = nil) {
+         _ uvcUnit: Int, _ uvcInterface: Int) {
         self.interface = interface
         self.uvcSize = uvcSize
         self.uvcSelector = uvcSelector.raw()
         self.uvcUnit = uvcUnit
         self.uvcInterface = uvcInterface
-        self.callouts = callouts ?? USBInterfaceCallouts.live(interface)
+        self.callouts = USBInterfaceCallouts.live(interface)
+    }
+
+    init(_ interface: USBInterfacePointer, _ uvcSize: Int, _ uvcSelector: Selector,
+         _ uvcUnit: Int, _ uvcInterface: Int, callouts: USBInterfaceCallouts) {
+        self.interface = interface
+        self.uvcSize = uvcSize
+        self.uvcSelector = uvcSelector.raw()
+        self.uvcUnit = uvcUnit
+        self.uvcInterface = uvcInterface
+        self.callouts = callouts
     }
 
     func getDataFor(type: UVCRequestCodes, length: Int) -> Int {
