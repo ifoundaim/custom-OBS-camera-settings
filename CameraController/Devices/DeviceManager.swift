@@ -34,11 +34,40 @@ final class DevicesManager: ObservableObject {
             CaptureDevice(avDevice: device)
         })
 
-        if let deviceId = UserSettings.shared.lastSelectedDevice {
-            selectedDevice = devices.first { (device) -> Bool in
-                device.avDevice?.uniqueID == deviceId
+        let candidates = devices.map {
+            DeviceSelectionCandidate(uniqueID: $0.avDevice?.uniqueID, isConfigurable: $0.isConfigurable())
+        }
+
+        if let index = Self.pickDefaultCandidateIndex(
+            candidates,
+            lastSelectedDeviceId: UserSettings.shared.lastSelectedDevice
+        ) {
+            selectedDevice = devices[index]
+        }
+    }
+
+    struct DeviceSelectionCandidate {
+        let uniqueID: String?
+        let isConfigurable: Bool
+    }
+
+    static func pickDefaultCandidateIndex(
+        _ candidates: [DeviceSelectionCandidate],
+        lastSelectedDeviceId: String?
+    ) -> Int? {
+        guard !candidates.isEmpty else { return nil }
+
+        if let lastSelectedDeviceId {
+            if let index = candidates.firstIndex(where: { $0.uniqueID == lastSelectedDeviceId }) {
+                return index
             }
         }
+
+        if let index = candidates.firstIndex(where: { $0.isConfigurable }) {
+            return index
+        }
+
+        return 0
     }
 
     func startMonitoring() {
