@@ -23,9 +23,9 @@ struct PanTiltView: View {
                 HStack {
                     Toggle(isOn: .constant(false))
                         .hidden()
-                    Slider(value: $panTiltAbsolute.sliderValue1,
-                              step: panTiltAbsolute.resolution1,
-                              sliderRange: panTiltAbsolute.minimum1...panTiltAbsolute.maximum1)
+                    SliderWithValue(value: $panTiltAbsolute.sliderValue1,
+                                    step: panTiltAbsolute.resolution1,
+                                    sliderRange: panTiltAbsolute.minimum1...panTiltAbsolute.maximum1)
                 }
             }
 
@@ -35,9 +35,9 @@ struct PanTiltView: View {
                 HStack {
                     Toggle(isOn: .constant(false))
                         .hidden()
-                    Slider(value: $panTiltAbsolute.sliderValue2,
-                              step: panTiltAbsolute.resolution2,
-                              sliderRange: panTiltAbsolute.minimum2...panTiltAbsolute.maximum2)
+                    SliderWithValue(value: $panTiltAbsolute.sliderValue2,
+                                    step: panTiltAbsolute.resolution2,
+                                    sliderRange: panTiltAbsolute.minimum2...panTiltAbsolute.maximum2)
                 }
             }
         }

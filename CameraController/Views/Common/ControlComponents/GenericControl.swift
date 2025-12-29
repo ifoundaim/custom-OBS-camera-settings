@@ -54,9 +54,9 @@ struct GenericControl: View {
                     Toggle(isOn: .constant(false))
                         .hidden()
                 }
-                Slider(value: $value,
-                          step: step,
-                          sliderRange: range)
+                SliderWithValue(value: $value,
+                                step: step,
+                                sliderRange: range)
                     .disabled($auto.wrappedValue)
             }
         }

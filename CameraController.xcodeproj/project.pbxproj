@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		F42460312A5A104F009108C2 /* Toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42460302A5A104F009108C2 /* Toggle.swift */; };
 		F42460332A5A299B009108C2 /* GenericControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42460322A5A299B009108C2 /* GenericControl.swift */; };
+		F4A000112B1234567890ABCD /* ValueBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000012B1234567890ABCD /* ValueBadge.swift */; };
+		F4A000122B1234567890ABCD /* SliderWithValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000022B1234567890ABCD /* SliderWithValue.swift */; };
+		F4A000132B1234567890ABCD /* ValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000032B1234567890ABCD /* ValueFormatter.swift */; };
 		F42460352A5A65A0009108C2 /* BrightnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42460342A5A65A0009108C2 /* BrightnessView.swift */; };
 		F42460372A5A6697009108C2 /* ContrastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42460362A5A6697009108C2 /* ContrastView.swift */; };
 		F42460392A5A6706009108C2 /* SaturationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42460382A5A6706009108C2 /* SaturationView.swift */; };
@@ -72,6 +75,8 @@
 		F47D07F224C4125B00E44A22 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F47D07F124C4125B00E44A22 /* AVFoundation.framework */; };
 		F47D07F424C412F800E44A22 /* DevicesManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47D07F324C412F800E44A22 /* DevicesManagerTests.swift */; };
 		F47D080A24C50E1C00E44A22 /* StringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47D080924C50E1C00E44A22 /* StringTests.swift */; };
+		F4A000142B1234567890ABCD /* ValueFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000042B1234567890ABCD /* ValueFormatterTests.swift */; };
+		F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */; };
 		F486353124CBA574003CE0BA /* NumberCaptureDeviceProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486353024CBA574003CE0BA /* NumberCaptureDeviceProperty.swift */; };
 		F49FA8252A43BE5D0043E0E1 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F49FA8242A43BE5D0043E0E1 /* Sparkle */; };
 		F4D1713E2A3D4C770039E353 /* TabSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D1713D2A3D4C770039E353 /* TabSelectorView.swift */; };
@@ -158,6 +163,9 @@
 /* Begin PBXFileReference section */
 		F42460302A5A104F009108C2 /* Toggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toggle.swift; sourceTree = "<group>"; };
 		F42460322A5A299B009108C2 /* GenericControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericControl.swift; sourceTree = "<group>"; };
+		F4A000012B1234567890ABCD /* ValueBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueBadge.swift; sourceTree = "<group>"; };
+		F4A000022B1234567890ABCD /* SliderWithValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderWithValue.swift; sourceTree = "<group>"; };
+		F4A000032B1234567890ABCD /* ValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueFormatter.swift; sourceTree = "<group>"; };
 		F42460342A5A65A0009108C2 /* BrightnessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessView.swift; sourceTree = "<group>"; };
 		F42460362A5A6697009108C2 /* ContrastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContrastView.swift; sourceTree = "<group>"; };
 		F42460382A5A6706009108C2 /* SaturationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaturationView.swift; sourceTree = "<group>"; };
@@ -214,6 +222,8 @@
 		F47D080524C50DCE00E44A22 /* String+CameraInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+CameraInformation.swift"; sourceTree = "<group>"; };
 		F47D080724C50DD700E44A22 /* CameraInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInformation.swift; sourceTree = "<group>"; };
 		F47D080924C50E1C00E44A22 /* StringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringTests.swift; sourceTree = "<group>"; };
+		F4A000042B1234567890ABCD /* ValueFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueFormatterTests.swift; sourceTree = "<group>"; };
+		F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterConfigurationTests.swift; sourceTree = "<group>"; };
 		F47D080B24C50F7B00E44A22 /* USBDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDevice.swift; sourceTree = "<group>"; };
 		F47D080D24C54A2000E44A22 /* io_service_t+Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "io_service_t+Interface.swift"; sourceTree = "<group>"; };
 		F47D080F24C54B5C00E44A22 /* UnsafeMutablePointer+interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnsafeMutablePointer+interface.swift"; sourceTree = "<group>"; };
@@ -333,8 +343,18 @@
 				F42460302A5A104F009108C2 /* Toggle.swift */,
 				F454D4322A550CF8003F2872 /* AutoBadge.swift */,
 				F42460322A5A299B009108C2 /* GenericControl.swift */,
+				F4A000022B1234567890ABCD /* SliderWithValue.swift */,
+				F4A000012B1234567890ABCD /* ValueBadge.swift */,
 			);
 			path = ControlComponents;
+			sourceTree = "<group>";
+		};
+		F4A000202B1234567890ABCD /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				F4A000032B1234567890ABCD /* ValueFormatter.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		F4508ACD2A43E477003C44F1 /* UVC */ = {
@@ -429,6 +449,7 @@
 				F47D07ED24C4119200E44A22 /* Resources */,
 				F42D42E027A0F66D00107DFF /* Extensions */,
 				F46C25792A493E7F00FF9100 /* Managers */,
+				F4A000202B1234567890ABCD /* Helpers */,
 				F4D4C6FD24CBF97400581E05 /* Settings */,
 				F47D07EC24C4118200E44A22 /* Devices */,
 				F47D07EB24C4117A00E44A22 /* Views */,
@@ -453,6 +474,8 @@
 				F47D07E224C4104600E44A22 /* Info.plist */,
 				F47D07F324C412F800E44A22 /* DevicesManagerTests.swift */,
 				F47D080924C50E1C00E44A22 /* StringTests.swift */,
+				F4A000042B1234567890ABCD /* ValueFormatterTests.swift */,
+				F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */,
 			);
 			path = CameraControllerTests;
 			sourceTree = "<group>";
@@ -885,6 +908,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4A000132B1234567890ABCD /* ValueFormatter.swift in Sources */,
+				F4A000112B1234567890ABCD /* ValueBadge.swift in Sources */,
+				F4A000122B1234567890ABCD /* SliderWithValue.swift in Sources */,
 				F424603B2A5A673F009108C2 /* SharpnessView.swift in Sources */,
 				F42460412A5A6C75009108C2 /* ApplicationSection.swift in Sources */,
 				F42460452A5A6D07009108C2 /* ReadWriteSection.swift in Sources */,
@@ -951,6 +977,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F47D080A24C50E1C00E44A22 /* StringTests.swift in Sources */,
+				F4A000142B1234567890ABCD /* ValueFormatterTests.swift in Sources */,
+				F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */,
 				F47D07F424C412F800E44A22 /* DevicesManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

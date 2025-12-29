@@ -1,0 +1,94 @@
+name: Nightly
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Sparkle tools
+        run: |
+          brew update
+          brew install --cask sparkle
+
+      - name: Locate Sparkle publishing tools
+        id: sparkle_tools
+        run: |
+          SPARKLE_BIN="$(ls -d /opt/homebrew/Caskroom/sparkle/*/bin | sort -V | tail -n 1)"
+          echo "SPARKLE_BIN=$SPARKLE_BIN" >> "$GITHUB_ENV"
+          "$SPARKLE_BIN/generate_appcast" --help >/dev/null
+
+      - name: Build (Release)
+        run: |
+          xcodebuild \
+            -project CameraController.xcodeproj \
+            -scheme CameraController \
+            -configuration Release \
+            -derivedDataPath build \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            MARKETING_VERSION=0.0.${{ github.run_number }}
+
+      - name: Create update archive
+        run: |
+          ditto -c -k --keepParent "build/Build/Products/Release/CameraController.app" "CameraController.zip"
+
+      - name: Write Sparkle private key
+        run: |
+          if [ -z "${{ secrets.SPARKLE_ED25519_PRIVATE_KEY }}" ]; then
+            echo "Missing secret SPARKLE_ED25519_PRIVATE_KEY" >&2
+            exit 1
+          fi
+          printf "%s" "${{ secrets.SPARKLE_ED25519_PRIVATE_KEY }}" > sparkle_ed25519_priv.key
+          chmod 600 sparkle_ed25519_priv.key
+
+      - name: Generate appcast.xml
+        env:
+          DOWNLOAD_PREFIX: https://github.com/ifoundaim/custom-OBS-camera-settings/releases/download/nightly/
+        run: |
+          mkdir -p dist
+          mv CameraController.zip dist/CameraController.zip
+
+          # Sparkle tool generates appcast.xml (location may vary by version).
+          "$SPARKLE_BIN/generate_appcast" --ed-key-file sparkle_ed25519_priv.key --download-url-prefix "$DOWNLOAD_PREFIX" dist
+
+          APPCAST_PATH="$(find dist -maxdepth 2 -name appcast.xml -print -quit || true)"
+          if [ -z "$APPCAST_PATH" ]; then
+            APPCAST_PATH="$(find . -maxdepth 2 -name appcast.xml -print -quit || true)"
+          fi
+          if [ -z "$APPCAST_PATH" ]; then
+            echo "generate_appcast did not produce appcast.xml" >&2
+            exit 2
+          fi
+
+          cp "$APPCAST_PATH" appcast.xml
+
+      - name: Create/Update GitHub Release (nightly)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view nightly >/dev/null 2>&1 || \
+            gh release create nightly --prerelease --title "Nightly" --notes "Automated nightly build from master."
+
+          gh release upload nightly dist/CameraController.zip --clobber
+
+      - name: Commit updated appcast.xml
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add appcast.xml
+          git commit -m "Update appcast.xml (nightly)" || exit 0
+          git push
+
+

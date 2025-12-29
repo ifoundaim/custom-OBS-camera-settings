@@ -34,6 +34,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: - Check For Updates
+    @IBAction func checkForUpdates(_ sender: Any?) {
+        checkForUpdates()
+    }
+
     func checkForUpdates() {
         updaterController.checkForUpdates(nil)
     }

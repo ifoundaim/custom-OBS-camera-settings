@@ -42,9 +42,9 @@ struct ExposureView: View {
 
             HStack {
                 Toggle(isOn: auto.animation())
-                Slider(value: $exposureTime.sliderValue,
-                          step: exposureTime.resolution,
-                          sliderRange: exposureTime.minimum...exposureTime.maximum)
+                SliderWithValue(value: $exposureTime.sliderValue,
+                                step: exposureTime.resolution,
+                                sliderRange: exposureTime.minimum...exposureTime.maximum)
                     .disabled(auto.wrappedValue)
             }
 
@@ -59,9 +59,9 @@ struct ExposureView: View {
                             Spacer()
                         }
                         HStack {
-                            Slider(value: $gain.sliderValue,
-                                      step: gain.resolution,
-                                      sliderRange: gain.minimum...gain.maximum)
+                            SliderWithValue(value: $gain.sliderValue,
+                                            step: gain.resolution,
+                                            sliderRange: gain.minimum...gain.maximum)
                             .disabled(auto.wrappedValue)
                         }
                     }
