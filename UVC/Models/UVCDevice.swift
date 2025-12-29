@@ -23,6 +23,12 @@ public final class UVCDevice {
         interface = deviceInfo.interface
         processingUnitID = deviceInfo.descriptor.processingUnitID
         cameraTerminalID = deviceInfo.descriptor.cameraTerminalID
+        if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+            print(
+                "UVC_DEBUG: descriptor interfaceID=\(deviceInfo.descriptor.interfaceID) " +
+                "cameraTerminalID=\(cameraTerminalID) processingUnitID=\(processingUnitID)"
+            )
+        }
         properties = UVCDeviceProperties(deviceInfo)
     }
 

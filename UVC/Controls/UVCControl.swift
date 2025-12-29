@@ -90,7 +90,13 @@ public class UVCControl {
     }
 
     func updateIsCapable() {
-        isCapable = getDataFor(type: UVCRequestCodes.getInfo, length: 1) != 0
+        let info = getDataFor(type: UVCRequestCodes.getInfo, length: 1)
+        isCapable = info != 0
+        if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+            print(
+                "UVC_DEBUG: getInfo=\(info) selector=\(uvcSelector) unit=\(uvcUnit) iface=\(uvcInterface)"
+            )
+        }
     }
 
     private func performRequest(type: UVCRequestCodes,
