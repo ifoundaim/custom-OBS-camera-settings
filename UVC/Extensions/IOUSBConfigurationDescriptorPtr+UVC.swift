@@ -8,6 +8,7 @@
 
 import Foundation
 import IOKit
+import os.log
 
 extension IOUSBConfigurationDescriptorPtr {
     func proccessDescriptor() -> UVCDescriptor {
@@ -28,6 +29,21 @@ extension IOUSBConfigurationDescriptorPtr {
 
         // Treat the configuration descriptor as a flat byte buffer and scan through all sub-descriptors.
         let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer(self))
+
+        if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+            let log = OSLog(subsystem: "UVC", category: "Descriptor")
+            os_log("UVC_DEBUG: config bLength=%{public}d wTotalLength=%{public}d", log: log, type: .info, configLength, totalLength)
+
+            // Dump the first chunk of bytes for debugging (helps when parsing fails on some devices).
+            let dumpLen = min(96, totalLength)
+            var hexParts: [String] = []
+            hexParts.reserveCapacity(dumpLen)
+            for i in 0..<dumpLen {
+                hexParts.append(String(format: "%02X", bytes[i]))
+            }
+            os_log("UVC_DEBUG: descriptor dump (first %{public}d bytes): %{public}s", log: log, type: .info, dumpLen, hexParts.joined(separator: " ").cString(using: .utf8) ?? "")
+        }
+
         var offset = configLength
 
         // Track whether we're currently inside the VideoControl interface descriptor block.
