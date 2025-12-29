@@ -132,7 +132,51 @@ extension AVCaptureDevice {
         }
         guard interfaceRef != nil else { throw NSError(domain: #function, code: #line, userInfo: nil) }
 
-        let descriptor = configDesc!.proccessDescriptor()
+        // Get interface number from the actual interface (more reliable than parsing config descriptors on modern macOS).
+        var interfaceNumber: Int = -1
+        do {
+            var intf: UInt8 = 0
+            let rc = interfaceRef!.pointee.pointee.GetInterfaceNumber(interfaceRef!, &intf)
+            if rc == kIOReturnSuccess {
+                interfaceNumber = Int(intf)
+            }
+        }
+
+        var descriptor = configDesc?.proccessDescriptor() ?? UVCDescriptor(processingUnitID: -1, cameraTerminalID: -1, interfaceID: -1)
+
+        // Fallback: some devices/OS versions don't expose a readable config descriptor via IOUSBLib (bLength/wTotalLength become 0).
+        // If parsing fails, probe the unit IDs empirically via GET_INFO.
+        if descriptor.interfaceID == -1, interfaceNumber != -1 {
+            descriptor = UVCDescriptor(processingUnitID: descriptor.processingUnitID,
+                                       cameraTerminalID: descriptor.cameraTerminalID,
+                                       interfaceID: interfaceNumber)
+        }
+
+        if descriptor.interfaceID != -1, (descriptor.processingUnitID == -1 || descriptor.cameraTerminalID == -1) {
+            func probeUnitId(_ selector: Selector, maxUnitId: Int = 32) -> Int? {
+                for unit in 1...maxUnitId {
+                    let control = UVCControl(interfaceRef!.unsafelyUnwrapped, 1, selector, unit, descriptor.interfaceID)
+                    control.updateIsCapable()
+                    if control.isCapable {
+                        return unit
+                    }
+                }
+                return nil
+            }
+
+            let probedCameraTerminal = descriptor.cameraTerminalID == -1 ? probeUnitId(UVCCameraTerminal.aeMode) : nil
+            let probedProcessingUnit = descriptor.processingUnitID == -1 ? probeUnitId(UVCProcessingUnit.brightness) : nil
+
+            if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+                print("UVC_DEBUG: probed cameraTerminalID=\(probedCameraTerminal ?? -1) processingUnitID=\(probedProcessingUnit ?? -1) interfaceID=\(descriptor.interfaceID)")
+            }
+
+            descriptor = UVCDescriptor(
+                processingUnitID: probedProcessingUnit ?? descriptor.processingUnitID,
+                cameraTerminalID: probedCameraTerminal ?? descriptor.cameraTerminalID,
+                interfaceID: descriptor.interfaceID
+            )
+        }
 
         return USBDevice(interface: interfaceRef.unsafelyUnwrapped,
                          descriptor: descriptor)
