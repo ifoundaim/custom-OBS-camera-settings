@@ -15,51 +15,70 @@ extension AVCaptureDevice {
     private func getIOService() throws -> io_service_t {
         var camera: io_service_t = 0
         let cameraInformation = try self.modelID.extractCameraInformation()
-        let dictionary: NSMutableDictionary = IOServiceMatching("IOUSBDevice") as NSMutableDictionary
-        dictionary["idVendor"] = cameraInformation.vendorId
-        dictionary["idProduct"] = cameraInformation.productId
+        // On modern macOS versions, USB devices are commonly exposed as IOUSBHostDevice.
+        // Keep a fallback to IOUSBDevice for older systems / compatibility layers.
+        func matchingDict(_ className: String) -> NSMutableDictionary {
+            let dict: NSMutableDictionary = IOServiceMatching(className) as NSMutableDictionary
+            dict["idVendor"] = cameraInformation.vendorId
+            dict["idProduct"] = cameraInformation.productId
+            return dict
+        }
+
+        let dictionaries: [NSMutableDictionary] = [
+            matchingDict("IOUSBHostDevice"),
+            matchingDict("IOUSBDevice")
+        ]
 
         // adding other keys to this dictionary like kUSBProductString, kUSBVendorString, etc don't
         // seem to have any affect on using IOServiceGetMatchingService to get the correct camera,
         // so we instead get an iterator for the matching services based on idVendor and idProduct
         // and fetch their property dicts and then match against the more specific values
 
-        var iter: io_iterator_t = 0
-        if IOServiceGetMatchingServices(kIOMasterPortDefault, dictionary, &iter) == kIOReturnSuccess {
-            var cameraCandidate: io_service_t
-            cameraCandidate = IOIteratorNext(iter)
-            while cameraCandidate != 0 {
-                var propsRef: Unmanaged<CFMutableDictionary>?
+        for dictionary in dictionaries {
+            var iter: io_iterator_t = 0
+            if IOServiceGetMatchingServices(kIOMasterPortDefault, dictionary, &iter) == kIOReturnSuccess {
+                var cameraCandidate: io_service_t
+                cameraCandidate = IOIteratorNext(iter)
+                while cameraCandidate != 0 {
+                    var propsRef: Unmanaged<CFMutableDictionary>?
 
-                if IORegistryEntryCreateCFProperties(
-                    cameraCandidate,
-                    &propsRef,
-                    kCFAllocatorDefault,
-                    0) == kIOReturnSuccess {
-                    var found: Bool = false
-                    if let properties = propsRef?.takeRetainedValue() {
+                    if IORegistryEntryCreateCFProperties(
+                        cameraCandidate,
+                        &propsRef,
+                        kCFAllocatorDefault,
+                        0) == kIOReturnSuccess {
+                        var found: Bool = false
+                        if let properties = propsRef?.takeRetainedValue() {
 
-                        // uniqueID starts with hex version of locationID
-                        if let locationID = (properties as NSDictionary)["locationID"] as? Int {
-                            let locationIDHex = "0x" + String(locationID, radix: 16)
-                            if self.uniqueID.hasPrefix(locationIDHex) {
-                                camera = cameraCandidate
-                                found = true
+                            // uniqueID starts with hex version of locationID
+                            if let locationID = (properties as NSDictionary)["locationID"] as? Int {
+                                let locationIDHex = "0x" + String(locationID, radix: 16)
+                                if self.uniqueID.hasPrefix(locationIDHex) {
+                                    camera = cameraCandidate
+                                    found = true
+                                }
+                            }
+                            if found {
+                                // break out of `while (cameraCandidate != 0)`
+                                break
                             }
                         }
-                        if found {
-                            // break out of `while (cameraCandidate != 0)`
-                            break
-                        }
                     }
+                    cameraCandidate = IOIteratorNext(iter)
                 }
-                cameraCandidate = IOIteratorNext(iter)
+                // Release iterator and exit outer loop if found
+                let code: kern_return_t = IOObjectRelease(iter)
+                assert(code == kIOReturnSuccess)
+            }
+            if camera != 0 {
+                break
             }
         }
 
         // if we haven't found a camera after looping through the iterator, fallback on GetMatchingService method
         if camera == 0 {
-            camera = IOServiceGetMatchingService(kIOMasterPortDefault, dictionary)
+            // Keep compatibility fallback for older systems.
+            camera = IOServiceGetMatchingService(kIOMasterPortDefault, matchingDict("IOUSBDevice"))
         }
 
         return camera
