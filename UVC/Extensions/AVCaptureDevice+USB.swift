@@ -77,6 +77,18 @@ extension AVCaptureDevice {
         try camera.ioCreatePluginInterfaceFor(service: kIOUSBDeviceUserClientTypeID) {
             let deviceInterface: DeviceInterfacePointer = try $0.getInterface(uuid: kIOUSBDeviceInterfaceID)
             defer { _ = deviceInterface.pointee.pointee.Release(deviceInterface) }
+
+            // On newer macOS versions / some devices, config descriptor reads can return empty data unless the
+            // device interface is opened first.
+            let openResult = deviceInterface.pointee.pointee.USBDeviceOpen(deviceInterface)
+            if openResult != kIOReturnSuccess {
+                let seizeResult = deviceInterface.pointee.pointee.USBDeviceOpenSeize(deviceInterface)
+                guard seizeResult == kIOReturnSuccess else {
+                    throw NSError(domain: #function, code: #line, userInfo: nil)
+                }
+            }
+            defer { _ = deviceInterface.pointee.pointee.USBDeviceClose(deviceInterface) }
+
             let interfaceRequest = IOUSBFindInterfaceRequest(bInterfaceClass: UVCConstants.classVideo,
                                                              bInterfaceSubClass: UVCConstants.subclassVideoControl,
                                                              bInterfaceProtocol: UInt16(kIOUSBFindInterfaceDontCare),
