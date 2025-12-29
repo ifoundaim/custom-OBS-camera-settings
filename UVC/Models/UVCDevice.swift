@@ -8,7 +8,7 @@
 
 import Foundation
 import AVFoundation
-import os
+import os.log
 
 typealias USBInterfacePointer = UnsafeMutablePointer<UnsafeMutablePointer<IOUSBInterfaceInterface190>>
 
@@ -25,8 +25,13 @@ public final class UVCDevice {
         processingUnitID = deviceInfo.descriptor.processingUnitID
         cameraTerminalID = deviceInfo.descriptor.cameraTerminalID
         if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
-            Logger(subsystem: "UVC", category: "UVCDevice").info(
-                "UVC_DEBUG: descriptor interfaceID=\(deviceInfo.descriptor.interfaceID, privacy: .public) cameraTerminalID=\(cameraTerminalID, privacy: .public) processingUnitID=\(processingUnitID, privacy: .public)"
+            os_log(
+                "UVC_DEBUG: descriptor interfaceID=%{public}d cameraTerminalID=%{public}d processingUnitID=%{public}d",
+                log: OSLog(subsystem: "UVC", category: "UVCDevice"),
+                type: .info,
+                deviceInfo.descriptor.interfaceID,
+                cameraTerminalID,
+                processingUnitID
             )
         }
         properties = UVCDeviceProperties(deviceInfo)

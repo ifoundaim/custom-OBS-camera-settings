@@ -8,7 +8,7 @@
 
 import Foundation
 import IOKit.usb
-import os
+import os.log
 
 protocol Selector {
     func raw() -> Int
@@ -40,7 +40,7 @@ public class UVCControl {
     }
 
     private let callouts: USBInterfaceCallouts
-    private static let logger = Logger(subsystem: "UVC", category: "UVCControl")
+    private static let log = OSLog(subsystem: "UVC", category: "UVCControl")
 
     public var isCapable: Bool = false
 
@@ -95,8 +95,14 @@ public class UVCControl {
         let info = getDataFor(type: UVCRequestCodes.getInfo, length: 1)
         isCapable = info != 0
         if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
-            Self.logger.info(
-                "UVC_DEBUG: getInfo=\(info, privacy: .public) selector=\(uvcSelector, privacy: .public) unit=\(uvcUnit, privacy: .public) iface=\(uvcInterface, privacy: .public)"
+            os_log(
+                "UVC_DEBUG: getInfo=%{public}d selector=%{public}d unit=%{public}d iface=%{public}d",
+                log: Self.log,
+                type: .info,
+                info,
+                uvcSelector,
+                uvcUnit,
+                uvcInterface
             )
         }
     }
@@ -138,8 +144,15 @@ public class UVCControl {
 
             guard callouts.controlRequest(&request) == kIOReturnSuccess else {
                 if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
-                    Self.logger.error(
-                        "UVC_DEBUG: ControlRequest failed after open. type=\(String(describing: type), privacy: .public) selector=\(uvcSelector, privacy: .public) unit=\(uvcUnit, privacy: .public) iface=\(uvcInterface, privacy: .public) len=\(length, privacy: .public)"
+                    os_log(
+                        "UVC_DEBUG: ControlRequest failed after open. type=%{public}d selector=%{public}d unit=%{public}d iface=%{public}d len=%{public}d",
+                        log: Self.log,
+                        type: .error,
+                        type.rawValue,
+                        uvcSelector,
+                        uvcUnit,
+                        uvcInterface,
+                        length
                     )
                 }
                 throw UVCError.requestError
