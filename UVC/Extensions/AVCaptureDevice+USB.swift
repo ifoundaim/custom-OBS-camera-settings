@@ -155,7 +155,7 @@ extension AVCaptureDevice {
         if descriptor.interfaceID != -1, (descriptor.processingUnitID == -1 || descriptor.cameraTerminalID == -1) {
             func probeUnitId(_ selector: Selector, maxUnitId: Int = 32) -> Int? {
                 for unit in 1...maxUnitId {
-                    let control = UVCControl(interfaceRef!.unsafelyUnwrapped, 1, selector, unit, descriptor.interfaceID)
+                    let control = UVCControl(interfaceRef!, 1, selector, unit, descriptor.interfaceID)
                     control.updateIsCapable()
                     if control.isCapable {
                         return unit
