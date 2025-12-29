@@ -24,9 +24,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         LetsMove.shared.moveToApplicationsFolderIfNecessary()
 
+        // Regular windowed app UX: show the main window on launch.
+        WindowManager.shared.showMainWindow()
+
         if UserSettings.shared.checkForUpdatesOnStartup {
             checkForUpdates()
         }
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        // Show the main window when the user clicks the Dock icon.
+        WindowManager.shared.showMainWindow()
+        return true
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

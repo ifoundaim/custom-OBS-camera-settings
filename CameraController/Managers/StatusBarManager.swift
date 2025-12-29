@@ -29,15 +29,11 @@ class StatusBarManager {
                                accessibilityDescription: "Camera Controller")
         button.imageScaling = NSImageScaling.scaleProportionallyDown
         button.target = self
-        button.action = #selector(showCustomView)
+        button.action = #selector(showMainWindow)
     }
 
     @objc
-    func showCustomView() {
-        guard let button = statusBarItem?.button else {
-            return
-        }
-
-        WindowManager.shared.toggleShowWindow(from: button)
+    func showMainWindow() {
+        WindowManager.shared.showMainWindow()
     }
 }

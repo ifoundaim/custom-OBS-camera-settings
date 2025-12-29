@@ -16,6 +16,8 @@ class WindowManager: NSObject {
     private var popover: NSPopover?
     private var isShowing: Bool = false
 
+    private var mainWindow: NSWindow?
+
     func toggleShowWindow(from button: NSButton) {
         if isShowing {
             closeWindow()
@@ -48,6 +50,29 @@ class WindowManager: NSObject {
 
         popover?.performClose(nil)
     }
+
+    // MARK: - Main Window (regular app UX)
+    func showMainWindow() {
+        if mainWindow == nil {
+            let hostingController = NSHostingController(rootView: ContentView())
+            let window = NSWindow(contentViewController: hostingController)
+            window.title = "CameraController"
+            window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
+            window.isReleasedWhenClosed = false
+            window.setFrameAutosaveName("CameraControllerMainWindow")
+            window.center()
+            window.delegate = self
+
+            // Give it a sensible initial size; the SwiftUI content is largely fixed-size.
+            window.setContentSize(NSSize(width: UserSettings.shared.cameraPreviewSize.getWidth(), height: 600))
+
+            mainWindow = window
+        }
+
+        NotificationCenter.default.post(name: .windowOpen, object: nil)
+        mainWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
 }
 
 extension WindowManager: NSPopoverDelegate {
@@ -63,5 +88,13 @@ extension WindowManager: NSPopoverDelegate {
     func popoverDidDetach(_ popover: NSPopover) {
         // Disable dragging, only dragging with the preview is allowed
         popover.contentViewController?.view.window?.isMovableByWindowBackground = false
+    }
+}
+
+extension WindowManager: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        if let closingWindow = notification.object as? NSWindow, closingWindow == mainWindow {
+            NotificationCenter.default.post(name: .windowClose, object: nil)
+        }
     }
 }

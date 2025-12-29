@@ -19,6 +19,13 @@ final class UpdaterConfigurationTests: XCTestCase {
         )
     }
 
+    func testAppIsNotAgentApp() {
+        // Regression: app should behave like a normal windowed Dock app (LSUIElement must not be true).
+        let bundle = Bundle(for: AppDelegate.self)
+        let agentFlag = bundle.object(forInfoDictionaryKey: "LSUIElement") as? Bool
+        XCTAssertFalse(agentFlag ?? false)
+    }
+
     func testAppDelegateHasCheckForUpdatesAction() {
         let method = class_getInstanceMethod(AppDelegate.self, #selector(AppDelegate.checkForUpdates(_:)))
         XCTAssertNotNil(method)
