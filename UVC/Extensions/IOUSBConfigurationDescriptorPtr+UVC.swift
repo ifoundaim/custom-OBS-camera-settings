@@ -17,18 +17,47 @@ extension IOUSBConfigurationDescriptorPtr {
         var cameraTerminalID = -1
         var interfaceID = -1
 
+        let rawTotalLength = Int(self.pointee.wTotalLength)
         let totalLength = Int(UInt16(littleEndian: self.pointee.wTotalLength))
         let configLength = Int(self.pointee.bLength)
 
+        // Treat the configuration descriptor as a flat byte buffer.
+        let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer(self))
+
+        if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+            let log = OSLog(subsystem: "UVC", category: "Descriptor")
+            os_log(
+                "UVC_DEBUG: config bLength=%{public}d wTotalLength(raw)=%{public}d wTotalLength(le)=%{public}d",
+                log: log,
+                type: .info,
+                configLength,
+                rawTotalLength,
+                totalLength
+            )
+        }
+
         // Safety: configuration descriptor must fit in its reported length
         guard totalLength >= configLength, totalLength > 0 else {
+            if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+                let log = OSLog(subsystem: "UVC", category: "Descriptor")
+                let dumpLen = min(32, max(0, configLength))
+                var hexParts: [String] = []
+                hexParts.reserveCapacity(dumpLen)
+                for i in 0..<dumpLen {
+                    hexParts.append(String(format: "%02X", bytes[i]))
+                }
+                os_log(
+                    "UVC_DEBUG: descriptor dump (first %{public}d bytes): %{public}s",
+                    log: log,
+                    type: .info,
+                    dumpLen,
+                    hexParts.joined(separator: " ")
+                )
+            }
             return UVCDescriptor(processingUnitID: processingUnitID,
                                  cameraTerminalID: cameraTerminalID,
                                  interfaceID: interfaceID)
         }
-
-        // Treat the configuration descriptor as a flat byte buffer and scan through all sub-descriptors.
-        let bytes = UnsafeMutablePointer<UInt8>(OpaquePointer(self))
 
         if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
             let log = OSLog(subsystem: "UVC", category: "Descriptor")
@@ -41,7 +70,7 @@ extension IOUSBConfigurationDescriptorPtr {
             for i in 0..<dumpLen {
                 hexParts.append(String(format: "%02X", bytes[i]))
             }
-            os_log("UVC_DEBUG: descriptor dump (first %{public}d bytes): %{public}s", log: log, type: .info, dumpLen, hexParts.joined(separator: " ").cString(using: .utf8) ?? "")
+            os_log("UVC_DEBUG: descriptor dump (first %{public}d bytes): %{public}s", log: log, type: .info, dumpLen, hexParts.joined(separator: " "))
         }
 
         var offset = configLength
