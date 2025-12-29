@@ -19,15 +19,36 @@ public class UVCControl {
     let uvcUnit: Int
     let uvcInterface: Int
 
+    struct USBInterfaceCallouts {
+        let controlRequest: (_ request: inout IOUSBDevRequest) -> Int32
+        let open: () -> Int32
+        let openSeize: () -> Int32
+        let close: () -> Int32
+
+        static func live(_ interface: USBInterfacePointer) -> USBInterfaceCallouts {
+            USBInterfaceCallouts(
+                controlRequest: { request in
+                    interface.pointee.pointee.ControlRequest(interface, 0, &request)
+                },
+                open: { interface.pointee.pointee.USBInterfaceOpen(interface) },
+                openSeize: { interface.pointee.pointee.USBInterfaceOpenSeize(interface) },
+                close: { interface.pointee.pointee.USBInterfaceClose(interface) }
+            )
+        }
+    }
+
+    private let callouts: USBInterfaceCallouts
+
     public var isCapable: Bool = false
 
     init(_ interface: USBInterfacePointer, _ uvcSize: Int, _ uvcSelector: Selector,
-         _ uvcUnit: Int, _ uvcInterface: Int) {
+         _ uvcUnit: Int, _ uvcInterface: Int, callouts: USBInterfaceCallouts? = nil) {
         self.interface = interface
         self.uvcSize = uvcSize
         self.uvcSelector = uvcSelector.raw()
         self.uvcUnit = uvcUnit
         self.uvcInterface = uvcInterface
+        self.callouts = callouts ?? USBInterfaceCallouts.live(interface)
     }
 
     func getDataFor(type: UVCRequestCodes, length: Int) -> Int {
@@ -79,18 +100,23 @@ public class UVCControl {
                                           wLength: UInt16(length),
                                           pData: value,
                                           wLenDone: 0)
-            if #available(macOS 12.0, *) {
-                guard
-                    interface.pointee.pointee.ControlRequest(interface, 0, &request) == kIOReturnSuccess else {
+
+            // Attempt request optimistically first (works if interface already open / doesn't require open).
+            if callouts.controlRequest(&request) == kIOReturnSuccess {
+                return
+            }
+
+            // Retry with an explicitly opened interface.
+            let openResult = callouts.open()
+            if openResult != kIOReturnSuccess {
+                guard callouts.openSeize() == kIOReturnSuccess else {
                     throw UVCError.requestError
                 }
-            } else {
-                guard
-                    interface.pointee.pointee.USBInterfaceOpenSeize(interface) == kIOReturnSuccess,
-                    interface.pointee.pointee.ControlRequest(interface, 0, &request) == kIOReturnSuccess,
-                    interface.pointee.pointee.USBInterfaceClose(interface) == kIOReturnSuccess else {
-                    throw UVCError.requestError
-                }
+            }
+            defer { _ = callouts.close() }
+
+            guard callouts.controlRequest(&request) == kIOReturnSuccess else {
+                throw UVCError.requestError
             }
         })
         return value

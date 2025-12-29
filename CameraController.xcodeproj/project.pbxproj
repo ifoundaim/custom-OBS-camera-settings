@@ -79,6 +79,7 @@
 		F4A000142B1234567890ABCD /* ValueFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000042B1234567890ABCD /* ValueFormatterTests.swift */; };
 		F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */; };
 		F4B100042B1234567890ABCD /* DevicesManagerSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */; };
+		F4B200022B1234567890ABCD /* UVCControlRequestRetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B200012B1234567890ABCD /* UVCControlRequestRetryTests.swift */; };
 		F486353124CBA574003CE0BA /* NumberCaptureDeviceProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = F486353024CBA574003CE0BA /* NumberCaptureDeviceProperty.swift */; };
 		F49FA8252A43BE5D0043E0E1 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F49FA8242A43BE5D0043E0E1 /* Sparkle */; };
 		F4D1713E2A3D4C770039E353 /* TabSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D1713D2A3D4C770039E353 /* TabSelectorView.swift */; };
@@ -228,6 +229,7 @@
 		F4A000042B1234567890ABCD /* ValueFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueFormatterTests.swift; sourceTree = "<group>"; };
 		F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterConfigurationTests.swift; sourceTree = "<group>"; };
 		F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesManagerSelectionTests.swift; sourceTree = "<group>"; };
+		F4B200012B1234567890ABCD /* UVCControlRequestRetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UVCControlRequestRetryTests.swift; sourceTree = "<group>"; };
 		F47D080B24C50F7B00E44A22 /* USBDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USBDevice.swift; sourceTree = "<group>"; };
 		F47D080D24C54A2000E44A22 /* io_service_t+Interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "io_service_t+Interface.swift"; sourceTree = "<group>"; };
 		F47D080F24C54B5C00E44A22 /* UnsafeMutablePointer+interface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnsafeMutablePointer+interface.swift"; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 				F47D07E224C4104600E44A22 /* Info.plist */,
 				F47D07F324C412F800E44A22 /* DevicesManagerTests.swift */,
 				F4B100032B1234567890ABCD /* DevicesManagerSelectionTests.swift */,
+				F4B200012B1234567890ABCD /* UVCControlRequestRetryTests.swift */,
 				F47D080924C50E1C00E44A22 /* StringTests.swift */,
 				F4A000042B1234567890ABCD /* ValueFormatterTests.swift */,
 				F4A000052B1234567890ABCD /* UpdaterConfigurationTests.swift */,
@@ -988,6 +991,7 @@
 				F4A000152B1234567890ABCD /* UpdaterConfigurationTests.swift in Sources */,
 				F47D07F424C412F800E44A22 /* DevicesManagerTests.swift in Sources */,
 				F4B100042B1234567890ABCD /* DevicesManagerSelectionTests.swift in Sources */,
+				F4B200022B1234567890ABCD /* UVCControlRequestRetryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
