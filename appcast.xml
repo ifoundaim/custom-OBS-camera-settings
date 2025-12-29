@@ -3,12 +3,12 @@
     <channel>
         <title>CameraController</title>
         <item>
-            <title>0.0.20</title>
-            <pubDate>Mon, 29 Dec 2025 19:52:19 +0000</pubDate>
-            <sparkle:version>20</sparkle:version>
-            <sparkle:shortVersionString>0.0.20</sparkle:shortVersionString>
+            <title>0.0.21</title>
+            <pubDate>Mon, 29 Dec 2025 20:00:46 +0000</pubDate>
+            <sparkle:version>21</sparkle:version>
+            <sparkle:shortVersionString>0.0.21</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>12.0</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/ifoundaim/custom-OBS-camera-settings/releases/download/nightly/CameraController.zip" length="3148001" type="application/octet-stream" sparkle:edSignature="3c4kcPCpGEQJH/1sIHS0jgfwiDyPMJpPwEq3UjxB4xXh+DrjxqO/yTym+zuSyJea6eaVvT547+OwJzJen2biBw=="/>
+            <enclosure url="https://github.com/ifoundaim/custom-OBS-camera-settings/releases/download/nightly/CameraController.zip" length="3148244" type="application/octet-stream" sparkle:edSignature="/5Qkzd7+GKhpmFYUb47XevXlia1pP2T8sb/lWNdMMrCyoUi7xoDct3tn4YhwbxyFQZRryj8ewS7TRNPzA0qNCw=="/>
         </item>
     </channel>
 </rss>
