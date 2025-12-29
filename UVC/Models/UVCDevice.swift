@@ -25,7 +25,7 @@ public final class UVCDevice {
         processingUnitID = deviceInfo.descriptor.processingUnitID
         cameraTerminalID = deviceInfo.descriptor.cameraTerminalID
         if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
-            Logger(subsystem: "UVC", category: "UVCDevice").notice(
+            Logger(subsystem: "UVC", category: "UVCDevice").info(
                 "UVC_DEBUG: descriptor interfaceID=\(deviceInfo.descriptor.interfaceID, privacy: .public) cameraTerminalID=\(cameraTerminalID, privacy: .public) processingUnitID=\(processingUnitID, privacy: .public)"
             )
         }

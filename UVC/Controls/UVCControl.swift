@@ -95,7 +95,7 @@ public class UVCControl {
         let info = getDataFor(type: UVCRequestCodes.getInfo, length: 1)
         isCapable = info != 0
         if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
-            Self.logger.notice(
+            Self.logger.info(
                 "UVC_DEBUG: getInfo=\(info, privacy: .public) selector=\(uvcSelector, privacy: .public) unit=\(uvcUnit, privacy: .public) iface=\(uvcInterface, privacy: .public)"
             )
         }
