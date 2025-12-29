@@ -118,15 +118,23 @@ public class UVCControl {
             }
 
             // Retry with an explicitly opened interface.
-            let openResult = callouts.open()
-            if openResult != kIOReturnSuccess {
-                guard callouts.openSeize() == kIOReturnSuccess else {
+            // Prefer OpenSeize (exclusive open) first; some devices/drivers appear to require it even if Open succeeds.
+            let seizeResult = callouts.openSeize()
+            if seizeResult != kIOReturnSuccess {
+                let openResult = callouts.open()
+                guard openResult == kIOReturnSuccess else {
                     throw UVCError.requestError
                 }
             }
             defer { _ = callouts.close() }
 
             guard callouts.controlRequest(&request) == kIOReturnSuccess else {
+                if ProcessInfo.processInfo.environment["UVC_DEBUG"] == "1" {
+                    print(
+                        "UVC_DEBUG: ControlRequest failed after open. " +
+                        "type=\(type) selector=\(uvcSelector) unit=\(uvcUnit) iface=\(uvcInterface) len=\(length)"
+                    )
+                }
                 throw UVCError.requestError
             }
         })

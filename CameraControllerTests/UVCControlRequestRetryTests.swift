@@ -49,8 +49,8 @@ final class UVCControlRequestRetryTests: XCTestCase {
         // Any request path triggers performRequest internally; updateIsCapable uses getInfo.
         control.updateIsCapable()
 
-        // Should attempt control request, then open, then control again, then close.
-        XCTAssertEqual(calls, ["control", "open", "control", "close"])
+        // Should attempt control request, then openSeize, then control again, then close.
+        XCTAssertEqual(calls, ["control", "openSeize", "control", "close"])
         XCTAssertTrue(control.isCapable)
     }
 }
