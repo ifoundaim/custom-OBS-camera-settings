@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import IOKit.usb
 
 protocol Selector {
     func raw() -> Int
