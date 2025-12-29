@@ -1,4 +1,4 @@
-<h1 align="center"> Custom OBS settings </h1>
+<h1 align="center"> Custom OBS camera settings </h1>
 
 <!-- subtext -->
 <div align="center">
