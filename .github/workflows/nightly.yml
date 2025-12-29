@@ -22,6 +22,10 @@ jobs:
           brew update
           brew install --cask sparkle
 
+      - name: Verify GitHub CLI
+        run: |
+          gh --version
+
       - name: Locate Sparkle publishing tools
         id: sparkle_tools
         run: |
@@ -73,12 +77,21 @@ jobs:
 
           cp "$APPCAST_PATH" appcast.xml
 
+      - name: Upload build artifacts (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-build
+          path: |
+            dist/CameraController.zip
+            appcast.xml
+
       - name: Create/Update GitHub Release (nightly)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view nightly >/dev/null 2>&1 || \
-            gh release create nightly --prerelease --title "Nightly" --notes "Automated nightly build from master."
+            gh release create nightly --prerelease --title "Nightly" --notes "Automated nightly build from master." --target "$GITHUB_SHA"
 
           gh release upload nightly dist/CameraController.zip --clobber
 
